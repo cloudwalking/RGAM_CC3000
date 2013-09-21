@@ -1,6 +1,10 @@
 /**
- * Wrapper around Adafruit's CC3000 library.
+ * RGAM_CC3000
+ * More pleasant API for Adafruit's CC3000 library.
  * Copyright 2013 RGAM LLC.
+ *
+ * You must #include <Adafruit_CC3000.h> in the 
+ * project.ino file before you #include this file.
  *
  * FYI you must use SPI pins for SCK, MISO, and MOSI.
  * On an UNO: SCK = 13, MISO = 12, and MOSI = 11
@@ -9,6 +13,7 @@
 #ifndef RGAM_CC3000_H
 #define RGAM_CC3000_H
 
+class Adafruit_CC3000;
 #include <Adafruit_CC3000.h>
 
 class RGAM_CC3000 {
