@@ -14,7 +14,7 @@
 #define RGAM_CC3000_H
 
 #ifndef WLAN_CONNECT_TIMEOUT
-#include <Adafruit_CC3000.h>
+#include "Adafruit_CC3000.h"
 #endif
 
 #include <SPI.h>
