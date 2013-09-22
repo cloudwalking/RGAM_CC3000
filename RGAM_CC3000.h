@@ -22,19 +22,26 @@
 class RGAM_CC3000 {
   public:
 
-    int IRQ, VBEN, CS;
-
     // Constructor
     // Pins:
     // IRQ - must be interrupt pin
     // VBEN, CS - any two pins
     RGAM_CC3000(int IRQ, int VBEN, int CS);
 
+    // Starts up the hardware.
     bool setup();
     
+    // Connect to a wifi network and configures DHCP.
+    // SSID max 32 characters.
+    // Security is one of (see wlan.h):
+    // WLAN_SEC_UNSEC, WLAN_SEC_WEP, WLAN_SEC_WPA, WLAN_SEC_WPA2
+    bool connectToNetwork(const char *SSID, const char *PASS, uint8_t SECURITY);
+    bool isConnected();
+    
+
+    
   private:
-    Adafruit_CC3000 _cc3000;
-    int _ip;
+    Adafruit_CC3000 _cc3k;
 };
 
 #endif

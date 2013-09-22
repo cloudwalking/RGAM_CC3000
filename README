@@ -1,0 +1,4 @@
+This is a wrapper around the Adafruit CC3000 wifi dingus library. It simplifies things quite a bit.
+
+Due to Arduino's whacky build process, you need to put a copy of the Adafruit_CC3000 library files in the same directory as this file. Put everything in Arduino/libraries/Adafruit_CC300/ into this directory.
+
