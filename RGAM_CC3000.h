@@ -38,10 +38,12 @@ class RGAM_CC3000 {
     bool connectToNetwork(const char *SSID, const char *PASS, uint8_t SECURITY);
     bool isConnected();
     
-
+    void printIPForHost(const char *host);
     
   private:
     Adafruit_CC3000 _cc3k;
+    
+    uint32_t ipForHost(const char *host);
 };
 
 #endif
