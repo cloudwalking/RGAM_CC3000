@@ -74,3 +74,5 @@ bool RGAM_CC3000::connectToNetwork(const char *SSID, const char *PASS, uint8_t S
 bool RGAM_CC3000::isConnected() {
   return _cc3k.checkConnected();
 }
+
+
