@@ -5,7 +5,7 @@
 // #include "utility/debug.h"
 
 RGAM_CC3000::RGAM_CC3000(int IRQ_, int VBEN_, int CS_)
-  : _cc3000(CS, IRQ, VBEN, SPI_CLOCK_DIV2)
+  : _cc3000(CS_, IRQ_, VBEN_, SPI_CLOCK_DIV2)
 {
   Serial.println("RGAM_CC3000");
   
