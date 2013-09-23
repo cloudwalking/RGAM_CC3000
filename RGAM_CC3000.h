@@ -40,10 +40,21 @@ class RGAM_CC3000 {
     
     void printIPForHost(const char *host);
     
+    // Constructs and passes a GET request to the given host.
+    // EG: _wifi.GETRequest("freegeoip.net", "/json/", NULL, result);
+    // The string passed in as 'result' will contain the response of the request.
+    // Returns true if the request succeeded, false on failure.
+    // "Succeeded" is currently define as "request returned any response from the server".
+    bool GETRequest(const char *host, const char *path, const char *headers, char *result);
+    
+    // Disconnect from the wifi network.
+    void disconnectFromNetwork();
+    
   private:
     Adafruit_CC3000 _cc3k;
     
     uint32_t ipForHost(const char *host);
+    char * constructGETRequest(const char *host, const char *path, const char *headers);
 };
 
 #endif
