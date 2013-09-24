@@ -2,14 +2,15 @@
 
 #include <ccspi.h>
 #include <string.h>
-// #include "utility/debug.h"
+
+#include "utility/debug.h"
 
 #define CLOCK_SPEED SPI_CLOCK_DIV2
 #define DHCP_TIMEOUT 60000 // 60 seconds
 #define CONNECTION_TIMEOUT 15000 // 15 seconds
 
 RGAM_CC3000::RGAM_CC3000(int IRQ_, int VBEN_, int CS_)
-  : _cc3k(CS_, IRQ_, VBEN_, CLOCK_SPEED) {
+: _cc3k(CS_, IRQ_, VBEN_, CLOCK_SPEED) {
   Serial.println("RGAM_cc3k");
 }
 
@@ -63,11 +64,13 @@ bool RGAM_CC3000::connectToNetwork(const char *SSID, const char *PASS, uint8_t S
     Serial.println("done");
   }
   
-  Serial.print("IP      : "); _cc3k.printIPdotsRev(ip);
-  Serial.print("\nNetmask : "); _cc3k.printIPdotsRev(netmask);
-  Serial.print("\nGateway : "); _cc3k.printIPdotsRev(gateway);
-  Serial.print("\nDHCP    : "); _cc3k.printIPdotsRev(dhcp);
-  Serial.print("\nDNS     : "); _cc3k.printIPdotsRev(dns);
+  // Serial.print("IP      : "); _cc3k.printIPdotsRev(ip);
+  // Serial.print("\nNetmask : "); _cc3k.printIPdotsRev(netmask);
+  // Serial.print("\nGateway : "); _cc3k.printIPdotsRev(gateway);
+  // Serial.print("\nDHCP    : "); _cc3k.printIPdotsRev(dhcp);
+  // Serial.print("\nDNS     : "); _cc3k.printIPdotsRev(dns);
+  
+  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
   
   return _cc3k.checkConnected() && _cc3k.checkDHCP();
 }
@@ -102,29 +105,80 @@ bool RGAM_CC3000::GETRequest(const char *host, const char *path, const char *hea
   uint32_t ip = ipForHost(host);
   if (!ip) return false;
   
+  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
+  
   char *requestString = constructGETRequest(host, path, headers);
   
+  _cc3k.setPrinter(NULL);
   Adafruit_CC3000_Client client = _cc3k.connectTCP(ip, 80);
+  _cc3k.setPrinter(&Serial);
   if (!client.connected()) return false;
   
-  Serial.println("REQUEST STRING: ");
-  Serial.println(requestString);
-  
   client.print(requestString);
+  free(requestString);
   
   uint32_t time = millis();
   while(!client.available() && millis() - time < 5000.0) { }
   
-  Serial.println("RESULT:");
-  Serial.println();
+  Serial.println("A");
+  
+  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
 
-  char c;
-  do {
-    c = (char)client.read();
-    Serial.print(c);
-  } while (c != 0);
+  uint32_t bytesReceived = 0;
+  char read;
+  bool start = false;
+  // bytesReceived = client.read(result_, sizeof(result_), 0);
+  while ( (read = (char)client.read()) != 0 ) {
+    if (read != '{' && !start) {
+      Serial.print(read);
+      continue;
+    } else if (!start) {
+      Serial.println("BEGIN BUFFERING");
+      start = true;
+    } 
+    
+    Serial.print(read);
+    result[bytesReceived++] = read;
+  }
+  Serial.println();
+  
+  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
+  
+  Serial.println("B");
+  
+  // while ( (read = (char)client.read()) != 0 ) {
+  //   
+  // }
+  
+  // result[0] = NULL;
+  // int oneBufferSize = 512;
+  // int currentBufferSize = 0;
+  // int bufferPointer = 0;
+  // while ( (read = (char)client.read()) != 0 ) {
+  //   Serial.println(read);
+  //   // Serial.println((int)read);
+  //   // If the pointer is pointing at the second to last character in the buffer
+  //   // (gotta keep that null terminator around), grow the buffer.
+  //   if (bufferPointer >= currentBufferSize - 2) {
+  //     Serial.print("EXPANDING BUFFER FROM ");
+  //     Serial.println(currentBufferSize);
+  //     //result = (char *)realloc(result, oneBufferSize * sizeof(char));
+  //     result = (char *)malloc(oneBufferSize * sizeof(char));
+  //     currentBufferSize += oneBufferSize;
+  //   }
+  // 
+  //   // bufferPointer++;
+  //   result[bufferPointer] = read;
+  //   bufferPointer++;
+  // }  
   
   client.close();
+  
+  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
+  
+  Serial.println("C");
+  
+  return bytesReceived;
 }
 
 void RGAM_CC3000::disconnectFromNetwork() {
@@ -200,7 +254,6 @@ char * RGAM_CC3000::constructGETRequest(const char *host, const char *path, cons
   
   // Create the string.
   // EG "GET /json/ HTTP/1.0\r\nConnection: close\r\n\r\n"
-  // char *requestString = (char *) malloc(sizeof(char) * requestSize);
   char *requestString = (char *) calloc(requestLenght, sizeof(char));
   
   strcat(requestString, method);
@@ -213,5 +266,11 @@ char * RGAM_CC3000::constructGETRequest(const char *host, const char *path, cons
   strcat(requestString, lineBreak);
   strcat(requestString, lineBreak);
   
+  free(headers);
+  
   return requestString;
+}
+
+int RGAM_CC3000::getFreeRam() {
+  return getFreeRam();
 }

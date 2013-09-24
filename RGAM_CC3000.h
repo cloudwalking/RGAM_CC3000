@@ -50,6 +50,9 @@ class RGAM_CC3000 {
     // Disconnect from the wifi network.
     void disconnectFromNetwork();
     
+    // Returns the number of free bytes in sram.
+    int getFreeRam();
+    
   private:
     Adafruit_CC3000 _cc3k;
     
