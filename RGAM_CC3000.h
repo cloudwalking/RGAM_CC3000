@@ -51,7 +51,7 @@ class RGAM_CC3000 {
     void disconnectFromNetwork();
     
     // Returns the number of free bytes in sram.
-    int getFreeRam();
+    int freeRam();
     
   private:
     Adafruit_CC3000 _cc3k;

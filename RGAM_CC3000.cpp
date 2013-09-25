@@ -70,7 +70,7 @@ bool RGAM_CC3000::connectToNetwork(const char *SSID, const char *PASS, uint8_t S
   // Serial.print("\nDHCP    : "); _cc3k.printIPdotsRev(dhcp);
   // Serial.print("\nDNS     : "); _cc3k.printIPdotsRev(dns);
   
-  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
+  // Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
   
   return _cc3k.checkConnected() && _cc3k.checkDHCP();
 }
@@ -105,7 +105,7 @@ bool RGAM_CC3000::GETRequest(const char *host, const char *path, const char *hea
   uint32_t ip = ipForHost(host);
   if (!ip) return false;
   
-  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
+  // Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
   
   char *requestString = constructGETRequest(host, path, headers);
   
@@ -121,8 +121,8 @@ bool RGAM_CC3000::GETRequest(const char *host, const char *path, const char *hea
   while(!client.available() && millis() - time < 5000.0) { }
   
   Serial.println("A");
-  
-  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
+  // 
+  // Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
 
   uint32_t bytesReceived = 0;
   char read;
@@ -137,44 +137,17 @@ bool RGAM_CC3000::GETRequest(const char *host, const char *path, const char *hea
       start = true;
     } 
     
-    Serial.print(read);
     result[bytesReceived++] = read;
   }
-  Serial.println();
-  
-  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
-  
+
   Serial.println("B");
-  
-  // while ( (read = (char)client.read()) != 0 ) {
-  //   
-  // }
-  
-  // result[0] = NULL;
-  // int oneBufferSize = 512;
-  // int currentBufferSize = 0;
-  // int bufferPointer = 0;
-  // while ( (read = (char)client.read()) != 0 ) {
-  //   Serial.println(read);
-  //   // Serial.println((int)read);
-  //   // If the pointer is pointing at the second to last character in the buffer
-  //   // (gotta keep that null terminator around), grow the buffer.
-  //   if (bufferPointer >= currentBufferSize - 2) {
-  //     Serial.print("EXPANDING BUFFER FROM ");
-  //     Serial.println(currentBufferSize);
-  //     //result = (char *)realloc(result, oneBufferSize * sizeof(char));
-  //     result = (char *)malloc(oneBufferSize * sizeof(char));
-  //     currentBufferSize += oneBufferSize;
-  //   }
-  // 
-  //   // bufferPointer++;
-  //   result[bufferPointer] = read;
-  //   bufferPointer++;
-  // }  
+
+  // Serial.println();  
+  // Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
   
   client.close();
   
-  Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
+  // Serial.print("Free RAM: "); Serial.println(getFreeRam(), DEC);
   
   Serial.println("C");
   
@@ -271,6 +244,6 @@ char * RGAM_CC3000::constructGETRequest(const char *host, const char *path, cons
   return requestString;
 }
 
-int RGAM_CC3000::getFreeRam() {
+int RGAM_CC3000::freeRam() {
   return getFreeRam();
 }
